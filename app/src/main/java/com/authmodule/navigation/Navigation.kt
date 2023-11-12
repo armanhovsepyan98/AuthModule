@@ -1,5 +1,7 @@
 package com.authmodule.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,21 +17,49 @@ fun Navigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = ScreenRoutes.SignInScreen.route
-    ){
-        composable(ScreenRoutes.SignInScreen.route){
-            val viewModel = SignInViewModel()
-            SignInScreen(viewModel)
+        startDestination = ScreenRoutes.SignUpScreen.route,
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                animationSpec = tween(300)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                animationSpec = tween(300)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                animationSpec = tween(300)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                animationSpec = tween(300)
+            )
         }
-        composable(ScreenRoutes.SignUpScreen.route){
+    ) {
+        composable(ScreenRoutes.SignInScreen.route) {
+            val viewModel = SignInViewModel()
+            SignInScreen(viewModel, onSignUpBtnClick = {
+            })
+        }
+        composable(ScreenRoutes.SignUpScreen.route) {
             val viewModel = SignUpViewModel()
-            SignUpScreen()
+            SignUpScreen(viewModel,
+                onLoginTxtClick = {
+                    navController.navigate(ScreenRoutes.SignInScreen.route){}
+                })
         }
     }
 
 }
 
-sealed class ScreenRoutes(val route:String){
-    object SignInScreen:ScreenRoutes("sign_in_screen")
-    object SignUpScreen:ScreenRoutes("sign_up_screen")
+sealed class ScreenRoutes(val route: String) {
+    object SignInScreen : ScreenRoutes("sign_in_screen")
+    object SignUpScreen : ScreenRoutes("sign_up_screen")
 }

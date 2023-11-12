@@ -1,22 +1,14 @@
 package com.authmodule.presentation.signin
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,14 +21,17 @@ import com.authmodule.presentation.components.AppButton
 import com.authmodule.presentation.components.Background
 import com.authmodule.presentation.components.EmailTextField
 import com.authmodule.presentation.components.PasswordTextField
+import com.authmodule.presentation.components.SeperatorWithText
 import com.authmodule.presentation.components.SocialMediaButton
 
 @Composable
-fun SignInScreen(viewModel: SignInViewModel) {
+fun SignInScreen(viewModel: SignInViewModel, onSignUpBtnClick: () -> Unit) {
     Background {
         HeaderComponent()
         InputFieldsComponent(viewModel)
-        ButtonsField()
+        ButtonsField {
+            onSignUpBtnClick()
+        }
     }
 }
 
@@ -90,13 +85,13 @@ fun InputFieldsComponent(viewModel: SignInViewModel) {
 }
 
 @Composable
-fun ButtonsField() {
+fun ButtonsField(onSignUpBtnClick: () -> Unit) {
     Spacer(modifier = Modifier.height(30.dp))
     AppButton(
         buttonTxt = "SignIn"
     ) {}
     Spacer(modifier = Modifier.height(30.dp))
-    LogInWithTextSeperator()
+    SeperatorWithText("Or Log In With")
     Spacer(modifier = Modifier.height(30.dp))
     SocialMediaButtonsRow()
     Spacer(modifier = Modifier.height(30.dp))
@@ -105,7 +100,9 @@ fun ButtonsField() {
     AppButton(
         buttonTxt = "Sign Up",
         backgroundColor = Color.White
-    ) {}
+    ) {
+        onSignUpBtnClick()
+    }
 }
 
 @Composable
@@ -146,41 +143,6 @@ fun SocialMediaButtonsRow() {
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 8.dp)
-        )
-    }
-}
-
-
-@Composable
-fun LogInWithTextSeperator() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .height(1.dp)
-                .weight(1f)
-                .background(Color.LightGray)
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Text(
-            text = "Or Log In With",
-            color = Color.Gray,
-            fontSize = 14.sp,
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Box(
-            modifier = Modifier
-                .height(1.dp)
-                .weight(1f)
-                .background(Color.LightGray)
         )
     }
 }
