@@ -17,6 +17,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"
             android:theme="@style/Theme.AuthModule">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

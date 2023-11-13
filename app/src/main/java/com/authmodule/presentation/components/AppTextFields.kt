@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -48,9 +47,7 @@ fun EmailTextField(
                 color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
             )
         },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Next
-        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = MaterialTheme.colorScheme.primary,
         ),
@@ -64,6 +61,7 @@ fun PasswordTextField(
     labelValue: String,
     hint: String,
     textValue: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
     onTextChanged: (String) -> Unit,
     isError: Boolean = false
 ) {
@@ -88,6 +86,7 @@ fun PasswordTextField(
                 color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
             )
         },
+        keyboardOptions = keyboardOptions,
         trailingIcon = {
             val iconImage = if (passwordVisibility.value) {
                 Icons.Filled.Visibility
@@ -114,9 +113,6 @@ fun PasswordTextField(
         } else {
             PasswordVisualTransformation()
         },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done
-        ),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = MaterialTheme.colorScheme.primary,
         ),

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.authmodule.common.Validator
 import com.authmodule.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,6 +20,12 @@ class SignUpViewModel @Inject constructor(
         private set
 
     var signUpUIState = mutableStateOf(SignUpUIState())
+
+    val isSignUpBtnEnabled
+        get() = Validator.validateEmail(signUpUIState.value.email).status
+                && Validator.validatePassword(signUpUIState.value.password).status
+                && Validator.validatePassword(signUpUIState.value.confirmPassword).status
+                && Validator.validateCheckBox(signUpUIState.value.isChecked).status
 
     fun onEvent(event: SignUpUIEvent) {
         when (event) {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +37,7 @@ fun SignInScreen(
         HeaderComponent()
         InputFieldsComponent(viewModel)
         ButtonsField(
+            isSignInBtnEnabled = viewModel.isSignInBtnEnabled,
             onSignUpBtnClick = {
                 onSignUpBtnClick()
             },
@@ -80,6 +83,7 @@ fun InputFieldsComponent(viewModel: SignInViewModel) {
     PasswordTextField(
         labelValue = "Password",
         hint = "Enter your password",
+        keyboardOptions =  KeyboardOptions(imeAction = ImeAction.Done),
         textValue = viewModel.signInUIState.value.password,
         onTextChanged = {
             viewModel.onEvent(SignInUIEvent.PasswordChanged(it))
@@ -99,12 +103,14 @@ fun InputFieldsComponent(viewModel: SignInViewModel) {
 
 @Composable
 fun ButtonsField(
+    isSignInBtnEnabled: Boolean,
     onSignUpBtnClick: () -> Unit,
     onSignInBtnClick: () -> Unit,
 ) {
     Spacer(modifier = Modifier.height(30.dp))
     AppButton(
-        buttonTxt = "SignIn"
+        buttonTxt = "SignIn",
+        isButtonEnabled = isSignInBtnEnabled
     ) {
         onSignInBtnClick()
     }
