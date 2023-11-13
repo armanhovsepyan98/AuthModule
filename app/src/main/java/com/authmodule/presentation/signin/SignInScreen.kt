@@ -20,19 +20,32 @@ import com.authmodule.R
 import com.authmodule.presentation.components.AppButton
 import com.authmodule.presentation.components.Background
 import com.authmodule.presentation.components.EmailTextField
+import com.authmodule.presentation.components.FullScreenLoading
 import com.authmodule.presentation.components.PasswordTextField
 import com.authmodule.presentation.components.SeperatorWithText
 import com.authmodule.presentation.components.SocialMediaButton
 
 @Composable
-fun SignInScreen(viewModel: SignInViewModel, onSignUpBtnClick: () -> Unit) {
+fun SignInScreen(
+    viewModel: SignInViewModel,
+    onSignUpBtnClick: () -> Unit,
+    onSignInBtnClick: () -> Unit
+) {
     Background {
         HeaderComponent()
         InputFieldsComponent(viewModel)
-        ButtonsField {
-            onSignUpBtnClick()
-        }
+        ButtonsField(
+            onSignUpBtnClick = {
+                onSignUpBtnClick()
+            },
+            onSignInBtnClick = {
+                onSignInBtnClick()
+            }
+
+        )
     }
+
+    FullScreenLoading(isLoading = viewModel.uiState is State.Loading)
 }
 
 @Composable
@@ -85,11 +98,16 @@ fun InputFieldsComponent(viewModel: SignInViewModel) {
 }
 
 @Composable
-fun ButtonsField(onSignUpBtnClick: () -> Unit) {
+fun ButtonsField(
+    onSignUpBtnClick: () -> Unit,
+    onSignInBtnClick: () -> Unit,
+) {
     Spacer(modifier = Modifier.height(30.dp))
     AppButton(
         buttonTxt = "SignIn"
-    ) {}
+    ) {
+        onSignInBtnClick()
+    }
     Spacer(modifier = Modifier.height(30.dp))
     SeperatorWithText("Or Log In With")
     Spacer(modifier = Modifier.height(30.dp))

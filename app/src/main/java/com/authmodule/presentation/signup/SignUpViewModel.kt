@@ -4,8 +4,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.authmodule.domain.repository.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignUpViewModel : ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val authRepo: AuthRepository
+) : ViewModel() {
 
     var uiState by mutableStateOf<State>(State.Initial)
         private set
@@ -38,10 +46,34 @@ class SignUpViewModel : ViewModel() {
                 )
             }
 
-            is SignUpUIEvent.FacebookBtnClicked -> TODO()
-            is SignUpUIEvent.GoogleBtnClicked -> TODO()
-            is SignUpUIEvent.LoginHereTxtClicked -> TODO()
-            is SignUpUIEvent.SignUpBtnClicked -> TODO()
+            SignUpUIEvent.SignUpBtnClicked -> {
+                signUpBtnClicked()
+            }
+
+            SignUpUIEvent.FacebookBtnClicked -> TODO()
+            SignUpUIEvent.GoogleBtnClicked -> TODO()
+            SignUpUIEvent.LoginHereTxtClicked -> TODO()
+        }
+    }
+
+    private fun signUpBtnClicked() {
+        uiState = State.Loading
+        viewModelScope.launch {
+            try {
+                val response = authRepo.register(
+                    email = signUpUIState.value.email,
+                    password = signUpUIState.value.password
+                )
+                uiState = if (response) {
+                    State.Success
+                } else {
+                    State.Error("Error")
+                }
+            } catch (e: Exception) {
+                uiState = State.Error("Could not register")
+            } finally {
+                uiState = State.Initial
+            }
         }
     }
 }
@@ -67,6 +99,7 @@ sealed class SignUpUIEvent {
 
 sealed class State {
     object Initial : State()
+    object Success : State()
     object Loading : State()
     open class Error(val messageRes: String) : State()
     open class ErrorWithCode(val message: String) : State()

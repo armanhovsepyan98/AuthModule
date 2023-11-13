@@ -4,8 +4,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.authmodule.domain.repository.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignInViewModel : ViewModel() {
+@HiltViewModel
+class SignInViewModel @Inject constructor(
+    private val authRepo: AuthRepository
+) : ViewModel() {
 
     var uiState by mutableStateOf<State>(State.Initial)
         private set
@@ -26,13 +34,38 @@ class SignInViewModel : ViewModel() {
                 )
             }
 
+            is SignInUIEvent.SignInBtnClicked -> {
+                signInBtnClicked()
+            }
+
             is SignInUIEvent.FacebookBtnClicked -> TODO()
             is SignInUIEvent.ForgotPasswordTxtClicked -> TODO()
             is SignInUIEvent.GoogleBtnClicked -> TODO()
-            is SignInUIEvent.SignInBtnClicked -> TODO()
             is SignInUIEvent.SignUpBtnClicked -> TODO()
         }
     }
+
+    private fun signInBtnClicked() {
+        uiState = State.Loading
+        viewModelScope.launch {
+            try {
+                val response = authRepo.login(
+                    email = signInUIState.value.email,
+                    password = signInUIState.value.password
+                )
+                uiState = if (response) {
+                    State.Success
+                } else {
+                    State.Error("Error")
+                }
+            } catch (e: Exception) {
+                uiState = State.Error("Could not login")
+            } finally {
+                uiState = State.Initial
+            }
+        }
+    }
+
 }
 
 data class SignInUIState(
@@ -54,6 +87,7 @@ sealed class SignInUIEvent {
 
 sealed class State {
     object Initial : State()
+    object Success : State()
     object Loading : State()
     open class Error(val messageRes: String) : State()
     open class ErrorWithCode(val message: String) : State()

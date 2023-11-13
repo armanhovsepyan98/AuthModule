@@ -22,19 +22,31 @@ import androidx.compose.ui.unit.sp
 import com.authmodule.presentation.components.AppButton
 import com.authmodule.presentation.components.Background
 import com.authmodule.presentation.components.EmailTextField
+import com.authmodule.presentation.components.FullScreenLoading
 import com.authmodule.presentation.components.PasswordTextField
 import com.authmodule.presentation.components.SeperatorWithText
 import com.authmodule.presentation.signin.SocialMediaButtonsRow
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel, onLoginTxtClick: () -> Unit) {
+fun SignUpScreen(
+    viewModel: SignUpViewModel,
+    onLoginTxtClick: () -> Unit,
+    onSignUpBtnClick: () -> Unit
+) {
     Background {
         HeaderComponent()
         InputFieldsComponent(viewModel)
-        ButtonsField {
-            onLoginTxtClick()
-        }
+        ButtonsField(
+            onLoginTxtClick = {
+                onLoginTxtClick()
+            },
+            onSignUpBtnClick = {
+                onSignUpBtnClick( )
+            }
+        )
     }
+
+    FullScreenLoading(isLoading = viewModel.uiState is State.Loading)
 }
 
 @Composable
@@ -95,11 +107,16 @@ fun InputFieldsComponent(viewModel: SignUpViewModel) {
 
 
 @Composable
-fun ButtonsField(onLoginTxtClick: () -> Unit) {
+fun ButtonsField(
+    onLoginTxtClick: () -> Unit,
+    onSignUpBtnClick: () -> Unit
+) {
     Spacer(modifier = Modifier.height(30.dp))
     AppButton(
         buttonTxt = "SignUp"
-    ) {}
+    ) {
+        onSignUpBtnClick()
+    }
     Spacer(modifier = Modifier.height(30.dp))
     SeperatorWithText("Or Sign Up with")
     Spacer(modifier = Modifier.height(30.dp))

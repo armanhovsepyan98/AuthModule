@@ -1,5 +1,10 @@
 buildscript {
-    val agp_version by extra("8.1.2")
+    repositories {
+        google()
+    }
+    dependencies {
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.47") // Use the latest version
+    }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

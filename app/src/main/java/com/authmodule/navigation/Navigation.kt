@@ -3,12 +3,15 @@ package com.authmodule.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.authmodule.presentation.signin.SignInScreen
+import com.authmodule.presentation.signin.SignInUIEvent
 import com.authmodule.presentation.signin.SignInViewModel
 import com.authmodule.presentation.signup.SignUpScreen
+import com.authmodule.presentation.signup.SignUpUIEvent
 import com.authmodule.presentation.signup.SignUpViewModel
 
 
@@ -44,15 +47,23 @@ fun Navigation() {
         }
     ) {
         composable(ScreenRoutes.SignInScreen.route) {
-            val viewModel = SignInViewModel()
-            SignInScreen(viewModel, onSignUpBtnClick = {
-            })
+            val viewModel = hiltViewModel<SignInViewModel>()
+            SignInScreen(viewModel,
+                onSignUpBtnClick = {
+                    navController.popBackStack()
+                },
+                onSignInBtnClick = {
+                    viewModel.onEvent(SignInUIEvent.SignInBtnClicked)
+                })
         }
         composable(ScreenRoutes.SignUpScreen.route) {
-            val viewModel = SignUpViewModel()
+            val viewModel = hiltViewModel<SignUpViewModel>()
             SignUpScreen(viewModel,
                 onLoginTxtClick = {
-                    navController.navigate(ScreenRoutes.SignInScreen.route){}
+                    navController.navigate(ScreenRoutes.SignInScreen.route) {}
+                },
+                onSignUpBtnClick = {
+                    viewModel.onEvent(SignUpUIEvent.SignUpBtnClicked)
                 })
         }
     }
